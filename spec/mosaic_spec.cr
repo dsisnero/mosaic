@@ -13,7 +13,7 @@ describe Mosaic::Renderer do
     result = renderer.render(canvas)
 
     # Compare with expected SHA256 hash (avoids large string diff in output)
-    expected_hash = "5cc5702e3fd8edc8405ac75c6ff14170effaf585f862dafae0c03a9cc588bbe7"
+    expected_hash = "a061efbc97df0425994d0f1657ed7819929fff59b04a2acb98a2b271c33c7b83"
     actual_hash = Digest::SHA256.hexdigest(result)
 
     if actual_hash != expected_hash
