@@ -332,6 +332,15 @@ module Mosaic
     g = color.g.to_u64
     b = color.b.to_u64
     a = color.a.to_u64
+
+    # Scale 8-bit values to 16-bit if necessary (Go's RGBA() returns 16-bit values)
+    if a <= 255
+      r *= 257
+      g *= 257
+      b *= 257
+      a *= 257
+    end
+
     # premultiply: component = component * a / 65535
     r = (r * a) // 65535
     g = (g * a) // 65535
@@ -705,11 +714,11 @@ module Mosaic
           b = y_frac1 * b_h0 + y_frac0 * b_h1
           a = y_frac1 * a_h0 + y_frac0 * a_h1
 
-          # Convert back to UInt16 with rounding (matching Go's rounding)
-          r = (r + 0.5).round.clamp(0.0, 65535.0).to_u16
-          g = (g + 0.5).round.clamp(0.0, 65535.0).to_u16
-          b = (b + 0.5).round.clamp(0.0, 65535.0).to_u16
-          a = (a + 0.5).round.clamp(0.0, 65535.0).to_u16
+          # Convert back to UInt16 with truncation (matching Go's conversion)
+          r = r.clamp(0.0, 65535.0).to_u16
+          g = g.clamp(0.0, 65535.0).to_u16
+          b = b.clamp(0.0, 65535.0).to_u16
+          a = a.clamp(0.0, 65535.0).to_u16
 
           scaled[x_index, y_index] = StumpyCore::RGBA.new(r, g, b, a)
         end
