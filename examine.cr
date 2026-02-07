@@ -20,4 +20,4 @@ class DebugRenderer < Mosaic::Renderer
 end
 
 renderer = DebugRenderer.new.width(80).height(40)
-result = renderer.render(canvas)
+_result = renderer.render(canvas)

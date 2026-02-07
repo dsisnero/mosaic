@@ -811,12 +811,21 @@ module Mosaic
       canvas.width.times do |x|
         canvas.height.times do |y|
           pixel = canvas[x, y]
-          inverted[x, y] = StumpyCore::RGBA.new(
-            255_u8 - pixel.r,
-            255_u8 - pixel.g,
-            255_u8 - pixel.b,
-            pixel.a
-          )
+          # Extract high bytes (8-bit representation)
+          hr = pixel.r >> 8
+          hg = pixel.g >> 8
+          hb = pixel.b >> 8
+          ha = pixel.a >> 8
+          # Invert RGB, keep alpha
+          inverted_hr = 255_u16 - hr
+          inverted_hg = 255_u16 - hg
+          inverted_hb = 255_u16 - hb
+          # Reconstruct 16-bit values (high byte repeated in low byte)
+          r = (inverted_hr << 8) | inverted_hr
+          g = (inverted_hg << 8) | inverted_hg
+          b = (inverted_hb << 8) | inverted_hb
+          a = (ha << 8) | ha
+          inverted[x, y] = StumpyCore::RGBA.new(r.to_u16, g.to_u16, b.to_u16, a.to_u16)
         end
       end
       inverted

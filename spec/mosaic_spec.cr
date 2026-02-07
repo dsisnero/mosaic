@@ -36,9 +36,37 @@ describe Mosaic::Renderer do
     result_dither.should_not eq(result_no_dither)
   end
 
-  pending "supports color inversion" do
+  it "supports color inversion" do
+    canvas = StumpyPNG.read("temp/charm-wish.png")
+    renderer_no_invert = Mosaic::Renderer.new.width(80).height(40).invert_colors(false)
+    renderer_invert = Mosaic::Renderer.new.width(80).height(40).invert_colors(true)
+
+    result_no_invert = renderer_no_invert.render(canvas)
+    result_invert = renderer_invert.render(canvas)
+
+    # Color inversion should produce different output for this image
+    result_invert.should_not eq(result_no_invert)
   end
 
-  pending "supports different symbol sets" do
+  it "supports different symbol sets" do
+    canvas = StumpyPNG.read("temp/charm-wish.png")
+
+    # Test each symbol type
+    renderer_half = Mosaic::Renderer.new.width(80).height(40).symbol(Mosaic::Symbol::Half)
+    renderer_quarter = Mosaic::Renderer.new.width(80).height(40).symbol(Mosaic::Symbol::Quarter)
+    renderer_all = Mosaic::Renderer.new.width(80).height(40).symbol(Mosaic::Symbol::All)
+
+    result_half = renderer_half.render(canvas)
+    result_quarter = renderer_quarter.render(canvas)
+    result_all = renderer_all.render(canvas)
+
+    # Results should not be empty
+    result_half.should_not be_empty
+    result_quarter.should_not be_empty
+    result_all.should_not be_empty
+
+    # At least two symbol sets should produce different output
+    # (not guaranteed but likely for our test image)
+    (result_half == result_quarter && result_half == result_all).should be_false
   end
 end
