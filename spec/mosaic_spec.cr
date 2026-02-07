@@ -24,7 +24,16 @@ describe Mosaic::Renderer do
     end
   end
 
-  pending "implements proper dithering" do
+  it "implements proper dithering" do
+    canvas = StumpyPNG.read("temp/charm-wish.png")
+    renderer_no_dither = Mosaic::Renderer.new.width(80).height(40).dither(false)
+    renderer_dither = Mosaic::Renderer.new.width(80).height(40).dither(true)
+
+    result_no_dither = renderer_no_dither.render(canvas)
+    result_dither = renderer_dither.render(canvas)
+
+    # Dithering should produce different output for this image
+    result_dither.should_not eq(result_no_dither)
   end
 
   pending "supports color inversion" do

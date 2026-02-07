@@ -50,6 +50,266 @@ module Mosaic
     Block.new('▞', {false, true, true, false}, " █\n█ "), # Quadrant upper right and lower left.
   ]
 
+  # Plan9 palette (256 colors) from Go's image/color/palette package
+  PLAN9_PALETTE = [
+    StumpyCore::RGBA.new(0_u8, 0_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 0_u8, 68_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 0_u8, 136_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 0_u8, 204_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 68_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 68_u8, 68_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 68_u8, 136_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 68_u8, 204_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 136_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 136_u8, 68_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 136_u8, 136_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 136_u8, 204_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 204_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 204_u8, 68_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 204_u8, 136_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 204_u8, 204_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 221_u8, 221_u8, 255_u8),
+    StumpyCore::RGBA.new(17_u8, 17_u8, 17_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 0_u8, 85_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 0_u8, 153_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 0_u8, 221_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 85_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 85_u8, 85_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 76_u8, 153_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 73_u8, 221_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 153_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 153_u8, 76_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 153_u8, 153_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 147_u8, 221_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 221_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 221_u8, 73_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 221_u8, 147_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 238_u8, 158_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 238_u8, 238_u8, 255_u8),
+    StumpyCore::RGBA.new(34_u8, 34_u8, 34_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 0_u8, 102_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 0_u8, 170_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 0_u8, 238_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 102_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 102_u8, 102_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 85_u8, 170_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 79_u8, 238_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 170_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 170_u8, 85_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 170_u8, 170_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 158_u8, 238_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 238_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 238_u8, 79_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 255_u8, 85_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 255_u8, 170_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 255_u8, 255_u8, 255_u8),
+    StumpyCore::RGBA.new(51_u8, 51_u8, 51_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 0_u8, 119_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 0_u8, 187_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 0_u8, 255_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 119_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 119_u8, 119_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 93_u8, 187_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 85_u8, 255_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 187_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 187_u8, 93_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 187_u8, 187_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 170_u8, 255_u8, 255_u8),
+    StumpyCore::RGBA.new(0_u8, 255_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(68_u8, 0_u8, 68_u8, 255_u8),
+    StumpyCore::RGBA.new(68_u8, 0_u8, 136_u8, 255_u8),
+    StumpyCore::RGBA.new(68_u8, 0_u8, 204_u8, 255_u8),
+    StumpyCore::RGBA.new(68_u8, 68_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(68_u8, 68_u8, 68_u8, 255_u8),
+    StumpyCore::RGBA.new(68_u8, 68_u8, 136_u8, 255_u8),
+    StumpyCore::RGBA.new(68_u8, 68_u8, 204_u8, 255_u8),
+    StumpyCore::RGBA.new(68_u8, 136_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(68_u8, 136_u8, 68_u8, 255_u8),
+    StumpyCore::RGBA.new(68_u8, 136_u8, 136_u8, 255_u8),
+    StumpyCore::RGBA.new(68_u8, 136_u8, 204_u8, 255_u8),
+    StumpyCore::RGBA.new(68_u8, 204_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(68_u8, 204_u8, 68_u8, 255_u8),
+    StumpyCore::RGBA.new(68_u8, 204_u8, 136_u8, 255_u8),
+    StumpyCore::RGBA.new(68_u8, 204_u8, 204_u8, 255_u8),
+    StumpyCore::RGBA.new(68_u8, 0_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(85_u8, 0_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(85_u8, 0_u8, 85_u8, 255_u8),
+    StumpyCore::RGBA.new(76_u8, 0_u8, 153_u8, 255_u8),
+    StumpyCore::RGBA.new(73_u8, 0_u8, 221_u8, 255_u8),
+    StumpyCore::RGBA.new(85_u8, 85_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(85_u8, 85_u8, 85_u8, 255_u8),
+    StumpyCore::RGBA.new(76_u8, 76_u8, 153_u8, 255_u8),
+    StumpyCore::RGBA.new(73_u8, 73_u8, 221_u8, 255_u8),
+    StumpyCore::RGBA.new(76_u8, 153_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(76_u8, 153_u8, 76_u8, 255_u8),
+    StumpyCore::RGBA.new(76_u8, 153_u8, 153_u8, 255_u8),
+    StumpyCore::RGBA.new(73_u8, 147_u8, 221_u8, 255_u8),
+    StumpyCore::RGBA.new(73_u8, 221_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(73_u8, 221_u8, 73_u8, 255_u8),
+    StumpyCore::RGBA.new(73_u8, 221_u8, 147_u8, 255_u8),
+    StumpyCore::RGBA.new(73_u8, 221_u8, 221_u8, 255_u8),
+    StumpyCore::RGBA.new(79_u8, 238_u8, 238_u8, 255_u8),
+    StumpyCore::RGBA.new(102_u8, 0_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(102_u8, 0_u8, 102_u8, 255_u8),
+    StumpyCore::RGBA.new(85_u8, 0_u8, 170_u8, 255_u8),
+    StumpyCore::RGBA.new(79_u8, 0_u8, 238_u8, 255_u8),
+    StumpyCore::RGBA.new(102_u8, 102_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(102_u8, 102_u8, 102_u8, 255_u8),
+    StumpyCore::RGBA.new(85_u8, 85_u8, 170_u8, 255_u8),
+    StumpyCore::RGBA.new(79_u8, 79_u8, 238_u8, 255_u8),
+    StumpyCore::RGBA.new(85_u8, 170_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(85_u8, 170_u8, 85_u8, 255_u8),
+    StumpyCore::RGBA.new(85_u8, 170_u8, 170_u8, 255_u8),
+    StumpyCore::RGBA.new(79_u8, 158_u8, 238_u8, 255_u8),
+    StumpyCore::RGBA.new(79_u8, 238_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(79_u8, 238_u8, 79_u8, 255_u8),
+    StumpyCore::RGBA.new(79_u8, 238_u8, 158_u8, 255_u8),
+    StumpyCore::RGBA.new(85_u8, 255_u8, 170_u8, 255_u8),
+    StumpyCore::RGBA.new(85_u8, 255_u8, 255_u8, 255_u8),
+    StumpyCore::RGBA.new(119_u8, 0_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(119_u8, 0_u8, 119_u8, 255_u8),
+    StumpyCore::RGBA.new(93_u8, 0_u8, 187_u8, 255_u8),
+    StumpyCore::RGBA.new(85_u8, 0_u8, 255_u8, 255_u8),
+    StumpyCore::RGBA.new(119_u8, 119_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(119_u8, 119_u8, 119_u8, 255_u8),
+    StumpyCore::RGBA.new(93_u8, 93_u8, 187_u8, 255_u8),
+    StumpyCore::RGBA.new(85_u8, 85_u8, 255_u8, 255_u8),
+    StumpyCore::RGBA.new(93_u8, 187_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(93_u8, 187_u8, 93_u8, 255_u8),
+    StumpyCore::RGBA.new(93_u8, 187_u8, 187_u8, 255_u8),
+    StumpyCore::RGBA.new(85_u8, 170_u8, 255_u8, 255_u8),
+    StumpyCore::RGBA.new(85_u8, 255_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(85_u8, 255_u8, 85_u8, 255_u8),
+    StumpyCore::RGBA.new(136_u8, 0_u8, 136_u8, 255_u8),
+    StumpyCore::RGBA.new(136_u8, 0_u8, 204_u8, 255_u8),
+    StumpyCore::RGBA.new(136_u8, 68_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(136_u8, 68_u8, 68_u8, 255_u8),
+    StumpyCore::RGBA.new(136_u8, 68_u8, 136_u8, 255_u8),
+    StumpyCore::RGBA.new(136_u8, 68_u8, 204_u8, 255_u8),
+    StumpyCore::RGBA.new(136_u8, 136_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(136_u8, 136_u8, 68_u8, 255_u8),
+    StumpyCore::RGBA.new(136_u8, 136_u8, 136_u8, 255_u8),
+    StumpyCore::RGBA.new(136_u8, 136_u8, 204_u8, 255_u8),
+    StumpyCore::RGBA.new(136_u8, 204_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(136_u8, 204_u8, 68_u8, 255_u8),
+    StumpyCore::RGBA.new(136_u8, 204_u8, 136_u8, 255_u8),
+    StumpyCore::RGBA.new(136_u8, 204_u8, 204_u8, 255_u8),
+    StumpyCore::RGBA.new(136_u8, 0_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(136_u8, 0_u8, 68_u8, 255_u8),
+    StumpyCore::RGBA.new(153_u8, 0_u8, 76_u8, 255_u8),
+    StumpyCore::RGBA.new(153_u8, 0_u8, 153_u8, 255_u8),
+    StumpyCore::RGBA.new(147_u8, 0_u8, 221_u8, 255_u8),
+    StumpyCore::RGBA.new(153_u8, 76_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(153_u8, 76_u8, 76_u8, 255_u8),
+    StumpyCore::RGBA.new(153_u8, 76_u8, 153_u8, 255_u8),
+    StumpyCore::RGBA.new(147_u8, 73_u8, 221_u8, 255_u8),
+    StumpyCore::RGBA.new(153_u8, 153_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(153_u8, 153_u8, 76_u8, 255_u8),
+    StumpyCore::RGBA.new(153_u8, 153_u8, 153_u8, 255_u8),
+    StumpyCore::RGBA.new(147_u8, 147_u8, 221_u8, 255_u8),
+    StumpyCore::RGBA.new(147_u8, 221_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(147_u8, 221_u8, 73_u8, 255_u8),
+    StumpyCore::RGBA.new(147_u8, 221_u8, 147_u8, 255_u8),
+    StumpyCore::RGBA.new(147_u8, 221_u8, 221_u8, 255_u8),
+    StumpyCore::RGBA.new(153_u8, 0_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(170_u8, 0_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(170_u8, 0_u8, 85_u8, 255_u8),
+    StumpyCore::RGBA.new(170_u8, 0_u8, 170_u8, 255_u8),
+    StumpyCore::RGBA.new(158_u8, 0_u8, 238_u8, 255_u8),
+    StumpyCore::RGBA.new(170_u8, 85_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(170_u8, 85_u8, 85_u8, 255_u8),
+    StumpyCore::RGBA.new(170_u8, 85_u8, 170_u8, 255_u8),
+    StumpyCore::RGBA.new(158_u8, 79_u8, 238_u8, 255_u8),
+    StumpyCore::RGBA.new(170_u8, 170_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(170_u8, 170_u8, 85_u8, 255_u8),
+    StumpyCore::RGBA.new(170_u8, 170_u8, 170_u8, 255_u8),
+    StumpyCore::RGBA.new(158_u8, 158_u8, 238_u8, 255_u8),
+    StumpyCore::RGBA.new(158_u8, 238_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(158_u8, 238_u8, 79_u8, 255_u8),
+    StumpyCore::RGBA.new(158_u8, 238_u8, 158_u8, 255_u8),
+    StumpyCore::RGBA.new(158_u8, 238_u8, 238_u8, 255_u8),
+    StumpyCore::RGBA.new(170_u8, 255_u8, 255_u8, 255_u8),
+    StumpyCore::RGBA.new(187_u8, 0_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(187_u8, 0_u8, 93_u8, 255_u8),
+    StumpyCore::RGBA.new(187_u8, 0_u8, 187_u8, 255_u8),
+    StumpyCore::RGBA.new(170_u8, 0_u8, 255_u8, 255_u8),
+    StumpyCore::RGBA.new(187_u8, 93_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(187_u8, 93_u8, 93_u8, 255_u8),
+    StumpyCore::RGBA.new(187_u8, 93_u8, 187_u8, 255_u8),
+    StumpyCore::RGBA.new(170_u8, 85_u8, 255_u8, 255_u8),
+    StumpyCore::RGBA.new(187_u8, 187_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(187_u8, 187_u8, 93_u8, 255_u8),
+    StumpyCore::RGBA.new(187_u8, 187_u8, 187_u8, 255_u8),
+    StumpyCore::RGBA.new(170_u8, 170_u8, 255_u8, 255_u8),
+    StumpyCore::RGBA.new(170_u8, 255_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(170_u8, 255_u8, 85_u8, 255_u8),
+    StumpyCore::RGBA.new(170_u8, 255_u8, 170_u8, 255_u8),
+    StumpyCore::RGBA.new(204_u8, 0_u8, 204_u8, 255_u8),
+    StumpyCore::RGBA.new(204_u8, 68_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(204_u8, 68_u8, 68_u8, 255_u8),
+    StumpyCore::RGBA.new(204_u8, 68_u8, 136_u8, 255_u8),
+    StumpyCore::RGBA.new(204_u8, 68_u8, 204_u8, 255_u8),
+    StumpyCore::RGBA.new(204_u8, 136_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(204_u8, 136_u8, 68_u8, 255_u8),
+    StumpyCore::RGBA.new(204_u8, 136_u8, 136_u8, 255_u8),
+    StumpyCore::RGBA.new(204_u8, 136_u8, 204_u8, 255_u8),
+    StumpyCore::RGBA.new(204_u8, 204_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(204_u8, 204_u8, 68_u8, 255_u8),
+    StumpyCore::RGBA.new(204_u8, 204_u8, 136_u8, 255_u8),
+    StumpyCore::RGBA.new(204_u8, 204_u8, 204_u8, 255_u8),
+    StumpyCore::RGBA.new(204_u8, 0_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(204_u8, 0_u8, 68_u8, 255_u8),
+    StumpyCore::RGBA.new(204_u8, 0_u8, 136_u8, 255_u8),
+    StumpyCore::RGBA.new(221_u8, 0_u8, 147_u8, 255_u8),
+    StumpyCore::RGBA.new(221_u8, 0_u8, 221_u8, 255_u8),
+    StumpyCore::RGBA.new(221_u8, 73_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(221_u8, 73_u8, 73_u8, 255_u8),
+    StumpyCore::RGBA.new(221_u8, 73_u8, 147_u8, 255_u8),
+    StumpyCore::RGBA.new(221_u8, 73_u8, 221_u8, 255_u8),
+    StumpyCore::RGBA.new(221_u8, 147_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(221_u8, 147_u8, 73_u8, 255_u8),
+    StumpyCore::RGBA.new(221_u8, 147_u8, 147_u8, 255_u8),
+    StumpyCore::RGBA.new(221_u8, 147_u8, 221_u8, 255_u8),
+    StumpyCore::RGBA.new(221_u8, 221_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(221_u8, 221_u8, 73_u8, 255_u8),
+    StumpyCore::RGBA.new(221_u8, 221_u8, 147_u8, 255_u8),
+    StumpyCore::RGBA.new(221_u8, 221_u8, 221_u8, 255_u8),
+    StumpyCore::RGBA.new(221_u8, 0_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(221_u8, 0_u8, 73_u8, 255_u8),
+    StumpyCore::RGBA.new(238_u8, 0_u8, 79_u8, 255_u8),
+    StumpyCore::RGBA.new(238_u8, 0_u8, 158_u8, 255_u8),
+    StumpyCore::RGBA.new(238_u8, 0_u8, 238_u8, 255_u8),
+    StumpyCore::RGBA.new(238_u8, 79_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(238_u8, 79_u8, 79_u8, 255_u8),
+    StumpyCore::RGBA.new(238_u8, 79_u8, 158_u8, 255_u8),
+    StumpyCore::RGBA.new(238_u8, 79_u8, 238_u8, 255_u8),
+    StumpyCore::RGBA.new(238_u8, 158_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(238_u8, 158_u8, 79_u8, 255_u8),
+    StumpyCore::RGBA.new(238_u8, 158_u8, 158_u8, 255_u8),
+    StumpyCore::RGBA.new(238_u8, 158_u8, 238_u8, 255_u8),
+    StumpyCore::RGBA.new(238_u8, 238_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(238_u8, 238_u8, 79_u8, 255_u8),
+    StumpyCore::RGBA.new(238_u8, 238_u8, 158_u8, 255_u8),
+    StumpyCore::RGBA.new(238_u8, 238_u8, 238_u8, 255_u8),
+    StumpyCore::RGBA.new(238_u8, 0_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(255_u8, 0_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(255_u8, 0_u8, 85_u8, 255_u8),
+    StumpyCore::RGBA.new(255_u8, 0_u8, 170_u8, 255_u8),
+    StumpyCore::RGBA.new(255_u8, 0_u8, 255_u8, 255_u8),
+    StumpyCore::RGBA.new(255_u8, 85_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(255_u8, 85_u8, 85_u8, 255_u8),
+    StumpyCore::RGBA.new(255_u8, 85_u8, 170_u8, 255_u8),
+    StumpyCore::RGBA.new(255_u8, 85_u8, 255_u8, 255_u8),
+    StumpyCore::RGBA.new(255_u8, 170_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(255_u8, 170_u8, 85_u8, 255_u8),
+    StumpyCore::RGBA.new(255_u8, 170_u8, 170_u8, 255_u8),
+    StumpyCore::RGBA.new(255_u8, 170_u8, 255_u8, 255_u8),
+    StumpyCore::RGBA.new(255_u8, 255_u8, 0_u8, 255_u8),
+    StumpyCore::RGBA.new(255_u8, 255_u8, 85_u8, 255_u8),
+    StumpyCore::RGBA.new(255_u8, 255_u8, 170_u8, 255_u8),
+    StumpyCore::RGBA.new(255_u8, 255_u8, 255_u8, 255_u8),
+  ]
+
   # In many contexts, a default threshold level is often set to 0.5 (or 50%),
   # which means that values above this threshold are considered positive,
   # while those below are considered negative.
@@ -459,9 +719,90 @@ module Mosaic
     end
 
     private def apply_dithering(canvas : StumpyCore::Canvas) : StumpyCore::Canvas
-      # TODO: Implement proper Floyd-Steinberg dithering with Plan9 palette
-      # For now, return the image unchanged to unblock main render implementation.
-      canvas
+      width = canvas.width
+      height = canvas.height
+      dithered = StumpyCore::Canvas.new(width, height)
+
+      # Error buffers for each channel (R, G, B, A) as Float64
+      error_r = Array.new(width) { Array.new(height, 0.0) }
+      error_g = Array.new(width) { Array.new(height, 0.0) }
+      error_b = Array.new(width) { Array.new(height, 0.0) }
+      error_a = Array.new(width) { Array.new(height, 0.0) }
+
+      height.times do |y|
+        width.times do |x|
+          # Original color
+          pixel = canvas[x, y]
+
+          # Add accumulated error
+          r = pixel.r.to_f64 + error_r[x][y]
+          g = pixel.g.to_f64 + error_g[x][y]
+          b = pixel.b.to_f64 + error_b[x][y]
+          a = pixel.a.to_f64 + error_a[x][y]
+
+          # Clamp to 0..255
+          r = r.clamp(0.0, 255.0)
+          g = g.clamp(0.0, 255.0)
+          b = b.clamp(0.0, 255.0)
+          a = a.clamp(0.0, 255.0)
+
+          # Find nearest palette color
+          best_color = PLAN9_PALETTE[0]
+          best_distance = Float64::MAX
+
+          PLAN9_PALETTE.each do |pal_color|
+            dr = r - pal_color.r.to_f64
+            dg = g - pal_color.g.to_f64
+            db = b - pal_color.b.to_f64
+            da = a - pal_color.a.to_f64
+            distance = dr*dr + dg*dg + db*db + da*da
+            if distance < best_distance
+              best_distance = distance
+              best_color = pal_color
+            end
+          end
+
+          # Set dithered pixel
+          dithered[x, y] = best_color
+
+          # Quantization error
+          err_r = r - best_color.r.to_f64
+          err_g = g - best_color.g.to_f64
+          err_b = b - best_color.b.to_f64
+          err_a = a - best_color.a.to_f64
+
+          # Distribute error to neighboring pixels (Floyd-Steinberg)
+          if x + 1 < width
+            error_r[x + 1][y] += err_r * 7.0 / 16.0
+            error_g[x + 1][y] += err_g * 7.0 / 16.0
+            error_b[x + 1][y] += err_b * 7.0 / 16.0
+            error_a[x + 1][y] += err_a * 7.0 / 16.0
+          end
+
+          if y + 1 < height
+            if x - 1 >= 0
+              error_r[x - 1][y + 1] += err_r * 3.0 / 16.0
+              error_g[x - 1][y + 1] += err_g * 3.0 / 16.0
+              error_b[x - 1][y + 1] += err_b * 3.0 / 16.0
+              error_a[x - 1][y + 1] += err_a * 3.0 / 16.0
+            end
+
+            error_r[x][y + 1] += err_r * 5.0 / 16.0
+            error_g[x][y + 1] += err_g * 5.0 / 16.0
+            error_b[x][y + 1] += err_b * 5.0 / 16.0
+            error_a[x][y + 1] += err_a * 5.0 / 16.0
+
+            if x + 1 < width
+              error_r[x + 1][y + 1] += err_r * 1.0 / 16.0
+              error_g[x + 1][y + 1] += err_g * 1.0 / 16.0
+              error_b[x + 1][y + 1] += err_b * 1.0 / 16.0
+              error_a[x + 1][y + 1] += err_a * 1.0 / 16.0
+            end
+          end
+        end
+      end
+
+      dithered
     end
 
     # invert_image inverts the colors of an image.
