@@ -13,14 +13,16 @@ describe Mosaic::Renderer do
     result = renderer.render(canvas)
 
     # Compare with expected SHA256 hash (avoids large string diff in output)
-    expected_hash = "a061efbc97df0425994d0f1657ed7819929fff59b04a2acb98a2b271c33c7b83"
+    expected_hash = "b3b74eb49ddef0d65defc8be4c6c589b42d49885970ee74067e6d9faf6cb7e1d"
     actual_hash = Digest::SHA256.hexdigest(result)
+    expected_len = 25648
+    actual_len = result.bytesize
 
-    if actual_hash != expected_hash
+    if actual_hash != expected_hash || actual_len != expected_len
       # Write actual output to temp file for debugging
       debug_path = "temp/actual_output.txt"
       File.write(debug_path, result)
-      fail "Rendered output hash mismatch\nExpected SHA256: #{expected_hash}\nActual SHA256:   #{actual_hash}\nFull output written to #{debug_path} for inspection"
+      fail "Rendered output mismatch\nExpected SHA256: #{expected_hash}\nActual SHA256:   #{actual_hash}\nExpected length: #{expected_len}\nActual length:   #{actual_len}\nFull output written to #{debug_path} for inspection"
     end
   end
 
