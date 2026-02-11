@@ -1,4 +1,5 @@
 require "stumpy_core"
+require "crimage"
 
 module Mosaic
   VERSION = "0.1.0"
@@ -386,6 +387,68 @@ module Mosaic
     (r.to_f64 * 0.299 + g.to_f64 * 0.587 + b.to_f64 * 0.114).to_u8
   end
 
+  # New creates and returns a renderer.
+  # Added for API compatibility with Go's mosaic.New().
+  def self.new : Renderer
+    Renderer.new
+  end
+
+  # to_canvas converts a CrImage image into a StumpyCore canvas.
+  def self.to_canvas(image : CrImage::Image) : StumpyCore::Canvas
+    bounds = image.bounds
+    canvas = StumpyCore::Canvas.new(bounds.width, bounds.height)
+
+    bounds.min.y.upto(bounds.max.y - 1) do |y|
+      bounds.min.x.upto(bounds.max.x - 1) do |x|
+        rgba = image.at(x, y).to_rgba8
+        canvas[x - bounds.min.x, y - bounds.min.y] = StumpyCore::RGBA.new(rgba.r, rgba.g, rgba.b, rgba.a)
+      end
+    end
+
+    canvas
+  end
+
+  # decode reads an image from path and converts it into a canvas.
+  def self.decode(path : String) : StumpyCore::Canvas
+    to_canvas(CrImage.read(path))
+  end
+
+  # decode reads an image from IO and converts it into a canvas.
+  def self.decode(io : IO) : StumpyCore::Canvas
+    to_canvas(CrImage.read(io))
+  end
+
+  # decode reads an image from bytes and converts it into a canvas.
+  def self.decode(bytes : Bytes) : StumpyCore::Canvas
+    decode(IO::Memory.new(bytes))
+  end
+
+  # Render renders an image with width/height overrides.
+  # Added for API compatibility with Go's mosaic.Render(img, width, height).
+  def self.render(canvas : StumpyCore::Canvas, width : Int, height : Int) : String
+    new.width(width).height(height).render(canvas)
+  end
+
+  # Render renders a CrImage image with width/height overrides.
+  def self.render(image : CrImage::Image, width : Int, height : Int) : String
+    render(to_canvas(image), width, height)
+  end
+
+  # Render decodes an image from path and renders it with width/height overrides.
+  def self.render(path : String, width : Int, height : Int) : String
+    render(decode(path), width, height)
+  end
+
+  # Render decodes an image from IO and renders it with width/height overrides.
+  def self.render(io : IO, width : Int, height : Int) : String
+    render(decode(io), width, height)
+  end
+
+  # Render decodes an image from bytes and renders it with width/height overrides.
+  def self.render(bytes : Bytes, width : Int, height : Int) : String
+    render(decode(bytes), width, height)
+  end
+
   # PixelBlock represents a 2x2 pixel block from the image.
   class PixelBlock
     property pixels : Array(Array(StumpyCore::RGBA))
@@ -438,53 +501,61 @@ module Mosaic
 
     # Scale sets the scale level on [Renderer].
     def scale(scale : Int) : self
-      @scale = scale.to_i32
-      self
+      copy = dup
+      copy.scale = scale.to_i32
+      copy
     end
 
     # IgnoreBlockSymbols set UseFgBgOnly on [Renderer].
     def ignore_block_symbols(fg_only : Bool) : self
-      @use_fg_bg_only = fg_only
-      self
+      copy = dup
+      copy.use_fg_bg_only = fg_only
+      copy
     end
 
     # Dither sets the dither level on [Renderer].
     def dither(dither : Bool) : self
-      @dither = dither
-      self
+      copy = dup
+      copy.dither = dither
+      copy
     end
 
     # Threshold sets the threshold level on [Renderer].
     # It expects a value between 0-255, anything else will be ignored.
     def threshold(threshold : Int) : self
+      copy = dup
       if threshold >= 0 && threshold <= U8_MAX_VALUE
-        @threshold_level = threshold.to_u8
+        copy.threshold_level = threshold.to_u8
       end
-      self
+      copy
     end
 
     # InvertColors whether to invert the colors of the mosaic image.
     def invert_colors(invert : Bool) : self
-      @invert_colors = invert
-      self
+      copy = dup
+      copy.invert_colors = invert
+      copy
     end
 
     # Width sets the maximum width the image can have. Defaults to the image width.
     def width(width : Int) : self
-      @output_width = width.to_i32
-      self
+      copy = dup
+      copy.output_width = width.to_i32
+      copy
     end
 
     # Height sets the maximum height the image can have. Defaults to the image height.
     def height(height : Int) : self
-      @output_height = height.to_i32
-      self
+      copy = dup
+      copy.output_height = height.to_i32
+      copy
     end
 
     # Symbol sets the mosaic symbol type.
     def symbol(symbol : Symbol) : self
-      @symbols = symbol
-      self
+      copy = dup
+      copy.symbols = symbol
+      copy
     end
 
     # Render renders the image to a string.
@@ -557,6 +628,26 @@ module Mosaic
       end
 
       output.to_s
+    end
+
+    # Render renders a CrImage image.
+    def render(image : CrImage::Image) : String
+      render(Mosaic.to_canvas(image))
+    end
+
+    # Render decodes and renders an image from path.
+    def render(path : String) : String
+      render(Mosaic.decode(path))
+    end
+
+    # Render decodes and renders an image from IO.
+    def render(io : IO) : String
+      render(Mosaic.decode(io))
+    end
+
+    # Render decodes and renders an image from bytes.
+    def render(bytes : Bytes) : String
+      render(Mosaic.decode(bytes))
     end
 
     # average_colors calculates the average color from a slice of colors.
@@ -718,32 +809,14 @@ module Mosaic
           b = y_frac1 * b_h0 + y_frac0 * b_h1
           a = y_frac1 * a_h0 + y_frac0 * a_h1
 
-          # Truncate to uint32 (then to uint16) matching Go's uint32(s11r)
-          pr = r.to_u32.to_u16
-          pg = g.to_u32.to_u16
-          pb = b.to_u32.to_u16
-          pa = a.to_u32.to_u16
+          # Truncate to uint32 matching Go's uint32(s11r) behavior, then quantize to 8-bit
+          # because x/image/draw writes into image.RGBA (8-bit premultiplied destination).
+          pr = (r.to_u32 >> 8).to_u8
+          pg = (g.to_u32 >> 8).to_u8
+          pb = (b.to_u32 >> 8).to_u8
+          pa = (a.to_u32 >> 8).to_u8
 
-          # Store as 16-bit RGBA (non-premultiplied)
-          # Since we stored premultiplied values, we need to un-premultiply for storage
-          # But Go's algorithm stores premultiplied values in the destination RGBA buffer?
-          # Actually Go's RGBA stores non-premultiplied values. The Over operation expects
-          # premultiplied values for compositing, but the final stored values are non-premultiplied.
-          # Since we're not doing Over (destination is zero), the result is premultiplied.
-          # However, later processing expects non-premultiplied colors.
-          # We need to un-premultiply.
-          if pa > 0
-            unpa = pa.to_f64
-            r = (pr.to_f64 * 65535.0 / unpa).round.to_u16
-            g = (pg.to_f64 * 65535.0 / unpa).round.to_u16
-            b = (pb.to_f64 * 65535.0 / unpa).round.to_u16
-          else
-            r = 0_u16
-            g = 0_u16
-            b = 0_u16
-          end
-
-          scaled[x_index, y_index] = StumpyCore::RGBA.new(r, g, b, pa)
+          scaled[x_index, y_index] = StumpyCore::RGBA.new(pr, pg, pb, pa)
         end
       end
 
@@ -753,12 +826,11 @@ module Mosaic
     # nrgba_premultiplied_16bit converts 8-bit NRGBA to premultiplied 16-bit values
     # matching Go's formula: r_premul = (r8 * a16) / 255 where a16 = a8 * 257
     private def nrgba_premultiplied_16bit(color : StumpyCore::RGBA) : Tuple(UInt16, UInt16, UInt16, UInt16)
-      # Extract components and convert to 8-bit (0-255)
-      # PNG stores 8-bit values in UInt16 (0-255), but handle 16-bit case
-      r8 = color.r <= 255 ? color.r.to_u64 : (color.r // 257).to_u64
-      g8 = color.g <= 255 ? color.g.to_u64 : (color.g // 257).to_u64
-      b8 = color.b <= 255 ? color.b.to_u64 : (color.b // 257).to_u64
-      a8 = color.a <= 255 ? color.a.to_u64 : (color.a // 257).to_u64
+      # Extract components and convert to 8-bit (0-255), matching Go's high-byte shift.
+      r8 = color.r <= 255 ? color.r.to_u64 : (color.r >> 8).to_u64
+      g8 = color.g <= 255 ? color.g.to_u64 : (color.g >> 8).to_u64
+      b8 = color.b <= 255 ? color.b.to_u64 : (color.b >> 8).to_u64
+      a8 = color.a <= 255 ? color.a.to_u64 : (color.a >> 8).to_u64
 
       # Scale alpha to 16-bit: a16 = a8 * 257
       a16 = a8 * 257
