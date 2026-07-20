@@ -13,10 +13,10 @@ dependencies:
     github: stumpycr/stumpy_core
   crimage:
     github: naqvis/crimage
-  golden:
-    github: dsisnero/golden
 
 development_dependencies:
+  golden:
+    github: dsisnero/golden
   ameba:
     github: crystal-ameba/ameba
   stumpy_png:
